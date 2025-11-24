@@ -1,487 +1,149 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>知识探索者 | 技术与生活的思考</title>
-  <!-- 引入 Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 引入 Font Awesome -->
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <!-- Tailwind 配置 -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#3b82f6',
-            secondary: '#f97316',
-            dark: '#1e293b',
-            light: '#f8fafc'
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            serif: ['Merriweather', 'Georgia', 'serif']
-          },
-        },
-      }
-    }
-  </script>
-  <style type="text/tailwindcss">
-    @layer utilities {
-      .content-auto {
-        content-visibility: auto;
-      }
-      .text-balance {
-        text-wrap: balance;
-      }
-      .article-card-shadow {
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-        transition: all 0.3s ease;
-      }
-      .article-card-shadow:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绚丽烟花秀</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden; /* 隐藏滚动条 */
+            font-family: 'Arial', sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        .tip-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 24px;
+            pointer-events: none; /* 让文字不影响点击 */
+            user-select: none;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
-  <!-- 导航栏 -->
-  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm transition-all duration-300" id="navbar">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <!-- Logo -->
-        <div class="flex items-center">
-          <a href="#" class="flex items-center space-x-2">
-            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <i class="fa fa-lightbulb-o text-white text-xl"></i>
-            </div>
-            <span class="text-xl font-bold text-dark">知识探索者</span>
-          </a>
-        </div>
-        
-        <!-- 桌面导航 -->
-        <nav class="hidden md:flex space-x-8">
-          <a href="#" class="text-dark hover:text-primary font-medium transition-colors duration-200 border-b-2 border-primary">首页</a>
-          <a href="#" class="text-gray-600 hover:text-primary font-medium transition-colors duration-200">技术</a>
-          <a href="#" class="text-gray-600 hover:text-primary font-medium transition-colors duration-200">生活</a>
-          <a href="#" class="text-gray-600 hover:text-primary font-medium transition-colors duration-200">关于</a>
-          <a href="#" class="text-gray-600 hover:text-primary font-medium transition-colors duration-200">联系</a>
-        </nav>
-        
-        <!-- 搜索和菜单按钮 -->
-        <div class="flex items-center space-x-4">
-          <button class="text-gray-600 hover:text-primary transition-colors duration-200">
-            <i class="fa fa-search text-lg"></i>
-          </button>
-          <button class="md:hidden text-gray-600 hover:text-primary transition-colors duration-200" id="menu-toggle">
-            <i class="fa fa-bars text-lg"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- 移动端导航菜单 -->
-    <div class="md:hidden hidden bg-white border-t" id="mobile-menu">
-      <div class="px-4 py-3 space-y-2">
-        <a href="#" class="block py-2 text-dark font-medium">首页</a>
-        <a href="#" class="block py-2 text-gray-600 hover:text-primary">技术</a>
-        <a href="#" class="block py-2 text-gray-600 hover:text-primary">生活</a>
-        <a href="#" class="block py-2 text-gray-600 hover:text-primary">关于</a>
-        <a href="#" class="block py-2 text-gray-600 hover:text-primary">联系</a>
-      </div>
-    </div>
-  </header>
+<body>
 
-  <!-- 英雄区域 -->
-  <section class="relative bg-gradient-to-br from-primary/90 to-dark text-white py-20 md:py-32 overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-      <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-white/30 blur-3xl"></div>
-      <div class="absolute left-1/2 top-1/2 w-60 h-60 rounded-full bg-white/20 blur-3xl"></div>
-      <div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-white/30 blur-3xl"></div>
-    </div>
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div class="max-w-3xl mx-auto text-center">
-        <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight mb-6 text-balance">
-          探索知识边界，分享思考火花
-        </h1>
-        <p class="text-[clamp(1rem,2vw,1.25rem)] text-white/90 mb-8 max-w-2xl mx-auto">
-          记录技术与生活的点滴感悟，与你一起成长为更好的自己
-        </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <a href="#articles" class="bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-            浏览文章
-          </a>
-          <a href="#subscribe" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white/10 transition-colors duration-200">
-            订阅更新
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+    <div class="tip-text">点击屏幕绽放烟花</div>
+    <canvas id="canvas"></canvas>
 
-  <!-- 分类标签 -->
-  <section class="py-8 bg-white">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex overflow-x-auto pb-4 space-x-3 scrollbar-hide">
-        <button class="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium whitespace-nowrap">
-          全部
-        </button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200">
-          前端开发
-        </button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200">
-          后端开发
-        </button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200">
-          工具推荐
-        </button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200">
-          生活感悟
-        </button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200">
-          读书笔记
-        </button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200">
-          旅行见闻
-        </button>
-      </div>
-    </div>
-  </section>
+<script>
+    // 获取canvas环境
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
 
-  <!-- 文章列表 -->
-  <section id="articles" class="py-12 bg-gray-50">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">最新文章</h2>
-        <p class="text-gray-600 max-w-2xl mx-auto">探索最新的技术趋势、实用技巧和生活感悟，不断提升自我认知与能力</p>
-      </div>
+    // 设置全屏
+    let w, h;
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- 文章卡片 1 -->
-        <article class="bg-white rounded-xl overflow-hidden article-card-shadow">
-          <div class="relative h-52 overflow-hidden">
-            <img src="https://picsum.photos/seed/article1/600/400" alt="React 18新特性介绍" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
-            <div class="absolute top-4 left-4">
-              <span class="bg-primary/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">前端开发</span>
-            </div>
-          </div>
-          <div class="p-6">
-            <div class="flex items-center text-gray-500 text-sm mb-3">
-              <span>2025年6月15日</span>
-              <span class="mx-2">•</span>
-              <span>8分钟阅读</span>
-            </div>
-            <h3 class="text-xl font-bold mb-3 line-clamp-2">
-              <a href="#" class="text-dark hover:text-primary transition-colors duration-200">React 18新特性全面解析：并发渲染与自动批处理</a>
-            </h3>
-            <p class="text-gray-600 mb-4 line-clamp-3">
-              React 18带来了革命性的并发渲染功能，本文深入探讨其工作原理、实际应用场景以及对前端开发流程的影响，帮助你快速掌握这些新特性。
-            </p>
-            <div class="flex justify-between items-center">
-              <div class="flex items-center">
-                <img src="https://picsum.photos/seed/author1/100/100" alt="张明" class="w-8 h-8 rounded-full object-cover">
-                <span class="ml-2 text-sm font-medium text-gray-700">张明</span>
-              </div>
-              <a href="#" class="text-primary hover:text-primary/80 font-medium text-sm flex items-center">
-                阅读更多 <i class="fa fa-arrow-right ml-1"></i>
-              </a>
-            </div>
-          </div>
-        </article>
+    // 烟花粒子数组
+    let particles = [];
 
-        <!-- 文章卡片 2 -->
-        <article class="bg-white rounded-xl overflow-hidden article-card-shadow">
-          <div class="relative h-52 overflow-hidden">
-            <img src="https://picsum.photos/seed/article2/600/400" alt="Python自动化测试实战" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
-            <div class="absolute top-4 left-4">
-              <span class="bg-secondary/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">后端开发</span>
-            </div>
-          </div>
-          <div class="p-6">
-            <div class="flex items-center text-gray-500 text-sm mb-3">
-              <span>2025年6月10日</span>
-              <span class="mx-2">•</span>
-              <span>10分钟阅读</span>
-            </div>
-            <h3 class="text-xl font-bold mb-3 line-clamp-2">
-              <a href="#" class="text-dark hover:text-primary transition-colors duration-200">Python自动化测试实战：从入门到精通</a>
-            </h3>
-            <p class="text-gray-600 mb-4 line-clamp-3">
-              本文详细介绍如何使用Pytest和Selenium构建高效的自动化测试框架，包括测试用例设计、断言处理、测试报告生成以及与CI/CD流程的集成。
-            </p>
-            <div class="flex justify-between items-center">
-              <div class="flex items-center">
-                <img src="https://picsum.photos/seed/author2/100/100" alt="李华" class="w-8 h-8 rounded-full object-cover">
-                <span class="ml-2 text-sm font-medium text-gray-700">李华</span>
-              </div>
-              <a href="#" class="text-primary hover:text-primary/80 font-medium text-sm flex items-center">
-                阅读更多 <i class="fa fa-arrow-right ml-1"></i>
-              </a>
-            </div>
-          </div>
-        </article>
+    // 生成随机颜色的辅助函数
+    function randomColor() {
+        const r = Math.floor(Math.random() * 255);
+        const g = Math.floor(Math.random() * 255);
+        const b = Math.floor(Math.random() * 255);
+        return `rgb(${r}, ${g}, ${b})`;
+    }
 
-        <!-- 文章卡片 3 -->
-        <article class="bg-white rounded-xl overflow-hidden article-card-shadow">
-          <div class="relative h-52 overflow-hidden">
-            <img src="https://picsum.photos/seed/article3/600/400" alt="高效开发者的工具链" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
-            <div class="absolute top-4 left-4">
-              <span class="bg-green-500/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">工具推荐</span>
-            </div>
-          </div>
-          <div class="p-6">
-            <div class="flex items-center text-gray-500 text-sm mb-3">
-              <span>2025年6月5日</span>
-              <span class="mx-2">•</span>
-              <span>7分钟阅读</span>
-            </div>
-            <h3 class="text-xl font-bold mb-3 line-clamp-2">
-              <a href="#" class="text-dark hover:text-primary transition-colors duration-200">提升10倍效率的开发者工具链：从代码到部署</a>
-            </h3>
-            <p class="text-gray-600 mb-4 line-clamp-3">
-              从代码编辑、版本控制到调试部署，本文推荐一套完整的现代化开发工具链，帮助你减少重复劳动，专注于核心代码创作，大幅提升开发效率。
-            </p>
-            <div class="flex justify-between items-center">
-              <div class="flex items-center">
-                <img src="https://picsum.photos/seed/author3/100/100" alt="王强" class="w-8 h-8 rounded-full object-cover">
-                <span class="ml-2 text-sm font-medium text-gray-700">王强</span>
-              </div>
-              <a href="#" class="text-primary hover:text-primary/80 font-medium text-sm flex items-center">
-                阅读更多 <i class="fa fa-arrow-right ml-1"></i>
-              </a>
-            </div>
-          </div>
-        </article>
+    // 粒子类
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            // 爆炸的速度和角度
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 5 + 2; // 速度范围
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed;
+            
+            this.alpha = 1; // 透明度
+            this.friction = 0.96; // 摩擦力（让烟花慢下来）
+            this.gravity = 0.05; // 重力（让烟花下坠）
+        }
 
-        <!-- 文章卡片 4 -->
-        <article class="bg-white rounded-xl overflow-hidden article-card-shadow">
-          <div class="relative h-52 overflow-hidden">
-            <img src="https://picsum.photos/seed/article4/600/400" alt="程序员如何保持学习动力" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
-            <div class="absolute top-4 left-4">
-              <span class="bg-purple-500/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">生活感悟</span>
-            </div>
-          </div>
-          <div class="p-6">
-            <div class="flex items-center text-gray-500 text-sm mb-3">
-              <span>2025年5月28日</span>
-              <span class="mx-2">•</span>
-              <span>9分钟阅读</span>
-            </div>
-            <h3 class="text-xl font-bold mb-3 line-clamp-2">
-              <a href="#" class="text-dark hover:text-primary transition-colors duration-200">程序员如何保持持续学习动力：从倦怠到热爱</a>
-            </h3>
-            <p class="text-gray-600 mb-4 line-clamp-3">
-              面对快速变化的技术栈，程序员如何避免职业倦怠并保持学习热情？本文分享几个实用方法，帮助你建立可持续的学习习惯和健康的工作生活平衡。
-            </p>
-            <div class="flex justify-between items-center">
-              <div class="flex items-center">
-                <img src="https://picsum.photos/seed/author4/100/100" alt="赵静" class="w-8 h-8 rounded-full object-cover">
-                <span class="ml-2 text-sm font-medium text-gray-700">赵静</span>
-              </div>
-              <a href="#" class="text-primary hover:text-primary/80 font-medium text-sm flex items-center">
-                阅读更多 <i class="fa fa-arrow-right ml-1"></i>
-              </a>
-            </div>
-          </div>
-        </article>
+        update() {
+            this.vx *= this.friction;
+            this.vy *= this.friction;
+            this.vy += this.gravity;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.alpha -= 0.015; // 慢慢消失
+        }
 
-        <!-- 文章卡片 5 -->
-        <article class="bg-white rounded-xl overflow-hidden article-card-shadow">
-          <div class="relative h-52 overflow-hidden">
-            <img src="https://picsum.photos/seed/article5/600/400" alt="2025年值得关注的技术趋势" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
-            <div class="absolute top-4 left-4">
-              <span class="bg-blue-500/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">技术趋势</span>
-            </div>
-          </div>
-          <div class="p-6">
-            <div class="flex items-center text-gray-500 text-sm mb-3">
-              <span>2025年5月20日</span>
-              <span class="mx-2">•</span>
-              <span>12分钟阅读</span>
-            </div>
-            <h3 class="text-xl font-bold mb-3 line-clamp-2">
-              <a href="#" class="text-dark hover:text-primary transition-colors duration-200">2025年值得关注的5大前沿技术：从AI到量子计算</a>
-            </h3>
-            <p class="text-gray-600 mb-4 line-clamp-3">
-              本文深入分析2025年最具潜力的技术发展方向，包括生成式AI的突破、Web3.0的实际应用、边缘计算的普及、量子计算的商业化探索以及绿色科技的创新。
-            </p>
-            <div class="flex justify-between items-center">
-              <div class="flex items-center">
-                <img src="https://picsum.photos/seed/author5/100/100" alt="陈明" class="w-8 h-8 rounded-full object-cover">
-                <span class="ml-2 text-sm font-medium text-gray-700">陈明</span>
-              </div>
-              <a href="#" class="text-primary hover:text-primary/80 font-medium text-sm flex items-center">
-                阅读更多 <i class="fa fa-arrow-right ml-1"></i>
-              </a>
-            </div>
-          </div>
-        </article>
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.alpha;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
 
-        <!-- 文章卡片 6 -->
-        <article class="bg-white rounded-xl overflow-hidden article-card-shadow">
-          <div class="relative h-52 overflow-hidden">
-            <img src="https://picsum.photos/seed/article6/600/400" alt="程序员书单推荐" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
-            <div class="absolute top-4 left-4">
-              <span class="bg-indigo-500/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">读书笔记</span>
-            </div>
-          </div>
-          <div class="p-6">
-            <div class="flex items-center text-gray-500 text-sm mb-3">
-              <span>2025年5月15日</span>
-              <span class="mx-2">•</span>
-              <span>8分钟阅读</span>
-            </div>
-            <h3 class="text-xl font-bold mb-3 line-clamp-2">
-              <a href="#" class="text-dark hover:text-primary transition-colors duration-200">程序员必读书单：从技术到思维的全面提升</a>
-            </h3>
-            <p class="text-gray-600 mb-4 line-clamp-3">
-              精选10本程序员必读的经典书籍，涵盖编程技能、系统架构、算法设计、代码质量、团队协作、职业发展等多个维度，助你成为更优秀的开发者。
-            </p>
-            <div class="flex justify-between items-center">
-              <div class="flex items-center">
-                <img src="https://picsum.photos/seed/author6/100/100" alt="林小雨" class="w-8 h-8 rounded-full object-cover">
-                <span class="ml-2 text-sm font-medium text-gray-700">林小雨</span>
-              </div>
-              <a href="#" class="text-primary hover:text-primary/80 font-medium text-sm flex items-center">
-                阅读更多 <i class="fa fa-arrow-right ml-1"></i>
-              </a>
-            </div>
-          </div>
-        </article>
-      </div>
+    // 创建爆炸效果
+    function createExplosion(x, y) {
+        const color = `hsl(${Math.random() * 360}, 100%, 50%)`; // 使用HSL颜色更鲜艳
+        for (let i = 0; i < 80; i++) { // 每一个烟花由80个粒子组成
+            particles.push(new Particle(x, y, color));
+        }
+    }
 
-      <!-- 加载更多按钮 -->
-      <div class="text-center mt-12">
-        <button class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-6 py-3 rounded-lg transition-colors duration-200 flex items-center mx-auto">
-          加载更多文章 <i class="fa fa-refresh ml-2"></i>
-        </button>
-      </div>
-    </div>
-  </section>
+    // 动画循环
+    function animate() {
+        // 核心技巧：不完全清除画布，而是覆盖一层半透明黑色，形成拖尾效果
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+        ctx.fillRect(0, 0, w, h);
 
-  <!-- 热门标签 -->
-  <section class="py-12 bg-white">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-dark mb-2">热门标签</h2>
-        <p class="text-gray-600">探索最受欢迎的主题和话题</p>
-      </div>
-      <div class="flex flex-wrap justify-center gap-3">
-        <a href="#" class="px-5 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors duration-200">
-          JavaScript
-        </a>
-        <a href="#" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors duration-200">
-          Python
-        </a>
-        <a href="#" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors duration-200">
-          React
-        </a>
-        <a href="#" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors duration-200">
-          Node.js
-        </a>
-        <a href="#" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors duration-200">
-          Vue.js
-        </a>
-        <a href="#" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors duration-200">
-          人工智能
-        </a>
-        <a href="#" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors duration-200">
-          前端开发
-        </a>
-        <a href="#" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors duration-200">
-          后端开发
-        </a>
-        <a href="#" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors duration-200">
-          区块链
-        </a>
-        <a href="#" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors duration-200">
-          云计算
-        </a>
-      </div>
-    </div>
-  </section>
+        // 更新和绘制所有粒子
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.update();
+            p.draw();
+            // 如果粒子完全消失，从数组移除
+            if (p.alpha <= 0) {
+                particles.splice(i, 1);
+            }
+        }
 
-  <!-- 订阅区域 -->
-  <section id="subscribe" class="py-16 bg-gradient-to-r from-dark to-primary text-white">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mx-auto text-center">
-        <h2 class="text-3xl font-bold mb-4">订阅我的博客更新</h2>
-        <p class="text-white/80 mb-8">
-          第一时间获取最新技术文章、教程和行业动态，不错过任何有价值的内容
-        </p>
-        <form class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
-          <input type="email" placeholder="输入你的邮箱地址" class="flex-1 px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white">
-          <button type="submit" class="bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200 whitespace-nowrap">
-            立即订阅
-          </button>
-        </form>
-        <p class="text-white/60 text-sm mt-4">
-          我们尊重你的隐私，不会向第三方分享你的邮箱地址
-        </p>
-      </div>
-    </div>
-  </section>
+        requestAnimationFrame(animate);
+    }
 
-  <!-- 页脚 -->
-  <footer class="bg-dark text-white/80 py-12">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div>
-          <div class="flex items-center space-x-2 mb-6">
-            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <i class="fa fa-lightbulb-o text-white text-xl"></i>
-            </div>
-            <span class="text-xl font-bold text-white">知识探索者</span>
-          </div>
-          <p class="mb-6">
-            记录技术与生活的点滴感悟，与你一起成长为更好的自己
-          </p>
-          <div class="flex space-x-4">
-            <a href="#" class="text-white/70 hover:text-white transition-colors duration-200">
-              <i class="fa fa-github text-xl"></i>
-            </a>
-            <a href="#" class="text-white/70 hover:text-white transition-colors duration-200">
-              <i class="fa fa-twitter text-xl"></i>
-            </a>
-            <a href="#" class="text-white/70 hover:text-white transition-colors duration-200">
-              <i class="fa fa-linkedin text-xl"></i>
-            </a>
-            <a href="#" class="text-white/70 hover:text-white transition-colors duration-200">
-              <i class="fa fa-instagram text-xl"></i>
-            </a>
-          </div>
-        </div>
+    // 点击事件
+    window.addEventListener('mousedown', (e) => {
+        createExplosion(e.clientX, e.clientY);
+    });
 
-        <div>
-          <h3 class="text-lg font-bold text-white mb-6">快速链接</h3>
-          <ul class="space-y-3">
-            <li><a href="#" class="hover:text-white transition-colors duration-200">首页</a></li>
-            <li><a href="#" class="hover:text-white transition-colors duration-200">关于我</a></li>
-            <li><a href="#" class="hover:text-white transition-colors duration-200">所有文章</a></li>
-            <li><a href="#" class="hover:text-white transition-colors duration-200">热门标签</a></li>
-            <li><a href="#" class="hover:text-white transition-colors duration-200">联系我</a></li>
-          </ul>
-        </div>
+    // 手机触摸事件
+    window.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // 防止滚动
+        const touch = e.touches[0];
+        createExplosion(touch.clientX, touch.clientY);
+    }, {passive: false});
 
-        <div>
-          <h3 class="text-lg font-bold text-white mb-6">文章分类</h3>
-          <ul class="space-y-3">
-            <li><a href="#" class="hover:text-white transition-colors duration-200">前端开发</a></li>
-            <li><a href="#" class="hover:text-white transition-colors duration-200">后端开发</a></li>
-            <li><a href="#" class="hover:text-white transition-colors duration-200">移动开发</a></li>
-            <li><a href="#" class="hover:text-white transition-colors duration-200">人工智能</a></li>
-            <li><a href="#" class="hover:text-white transition-colors duration-200">工具推荐</a></li>
-          </ul>
-        </div>
+    // 自动放烟花（每隔一点时间随机放一个）
+    setInterval(() => {
+        const x = Math.random() * w;
+        const y = Math.random() * h * 0.5; // 只在上半部分放
+        createExplosion(x, y);
+    }, 800);
 
-        <div>
-          <h3 class="text-lg font-bold text-white mb-6">联系我</h3>
-          <ul class="space-y-3">
-            <li class="flex items-start">
-              <i class="fa fa-envelope-o mt-1 mr-3"></i>
-              <span>contact@zhishitansuo.com</span>
-            </li>
-            <li class="flex items-start">
-              <i class="fa fa-map-marker mt-1 mr-3">
+    // 启动动画
+    animate();
+
+</script>
+</body>
+</html>
